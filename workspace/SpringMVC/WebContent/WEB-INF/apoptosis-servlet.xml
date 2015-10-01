@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
+http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.2.xsd
+http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.2.xsd
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa-1.3.xsd     
+http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.2.xsd
+http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
+
+	<!-- 自动扫描bean，把作了注解的类转换为bean -->
+	<!-- <context:annotation-config /> -->
+
+	<!-- <context:component-scan base-package="com.atpex.dao.impl" /> -->
+
+
+	<!-- 启动Spring MVC的注解功能，完成请求和注解POJO的映射 -->
+	<bean
+		class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter" />
+
+	<!-- HandlerMapping -->
+	<!-- 表示将请求的URL和Bean名字映射，如URL为 “上下文/hello”，则Spring配置文件必须有一个名字为“/hello”的Bean，上下文默认忽略。 -->
+	<bean
+		class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping" />
+
+	<!-- HandlerAdapter -->
+	<!-- SimpleControllerHandlerAdapter：表示所有实现了org.springframework.web.servlet.mvc.Controller接口的Bean可以作为Spring 
+		Web MVC中的处理器。 如果需要其他类型的处理器可以通过实现HadlerAdapter来解决。 -->
+	<bean
+		class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter" />
+
+
+	<!-- ViewResolver -->
+	<!-- 用于支持Servlet、JSP视图解析； viewClass：JstlView表示JSP模板页面需要使用JSTL标签库，classpath中必须包含jstl的相关jar包； 
+		prefix和suffix：查找视图页面的前缀和后缀（前缀[逻辑视图名]后缀），比如传进来的逻辑视图名为hello，则该该jsp视图页面应该存放在“WEB-INF/jsp/hello.jsp” -->
+	<!-- <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"> 
+		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/> 
+		<property name="prefix" value="/WEB-INF/jsp/"/> <property name="suffix" value=".jsp"/> 
+		</bean> -->
+
+
+	<!-- 多视图 -->
+	<bean name="jsonView" class="com.atpex.apoptosis.views.JsonView" />
+
+	<bean id="viewResolver" class="com.atpex.apoptosis.viewresolver.MultiViewResolver">
+		<property name="resolvers">
+			<map>
+				<entry key="jsp">
+					<bean
+						class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+						<property name="prefix" value="/WEB-INF/jsp/" />
+						<property name="suffix" value=".jsp" />
+					</bean>
+				</entry>
+				<entry key="json">
+					<bean class="org.springframework.web.servlet.view.BeanNameViewResolver">
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>
+
+
+
+	<!-- apache.dbcp连接池的配置 -->
+	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="oracle.jdbc.OracleDriver">
+		</property>
+		<property name="url" value="jdbc:oracle:thin:@localhost:1521:apoptosisbas"></property>
+		<property name="username" value="ATPEX"></property>
+		<property name="password" value="ATPEX"></property>
+		<property name="maxIdle" value="30"></property>
+		<property name="maxWaitMillis" value="500"></property>
+		<property name="defaultAutoCommit" value="true"></property>
+	</bean>
+
+	<!-- jdbc注入 -->
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate" depends-on="dataSource">
+		<property name="dataSource">
+			<ref bean="dataSource" />
+		</property>
+	</bean>
+
+	<import resource="modules/login.xml"/>
+	<!-- 处理器 -->
+	<bean name="/index" class="com.atpex.welcome.controller.WelcomeController" />
+	<bean name="/error" class="com.atpex.error.controller.ErrorController" />
+</beans>
