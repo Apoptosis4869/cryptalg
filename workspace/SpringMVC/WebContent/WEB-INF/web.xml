@@ -20,7 +20,7 @@
 
 	<filter>
 		<filter-name>NotLoginedFilter</filter-name>
-		<filter-class>com.atpex.apoptosis.utils.NotLoginedFilter</filter-class>
+		<filter-class>com.atpex.filter.NotLoginedFilter</filter-class>
 	</filter>
 	<filter-mapping>
 		<filter-name>NotLoginedFilter</filter-name>
@@ -45,5 +45,12 @@
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
 
-
+	<error-page>
+		<error-code>404</error-code>
+		<location>/WEB-INF/jsp/error/404.jsp</location>
+	</error-page>
+	<error-page>
+		<error-code>500</error-code>
+		<location>/WEB-INF/jsp/error/500.jsp</location>
+	</error-page>
 </web-app>

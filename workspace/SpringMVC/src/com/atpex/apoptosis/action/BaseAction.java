@@ -12,7 +12,11 @@ import org.springframework.web.servlet.ModelAndView;
  */
 public abstract class BaseAction {
 
+	protected static final String SUCCESS = "SUCCESS";
+	protected static final String FAILED = "FAILED";
+	
 	protected ModelAndView model = new ModelAndView();
+	protected String resourcePath;
 	
 	public abstract void doAction(HttpServletRequest request,
 			HttpServletResponse response);
@@ -24,6 +28,14 @@ public abstract class BaseAction {
 	public void setModel(ModelAndView model) {
 		this.model = model;
 	}
-	
+
+	public String getResourcePath() {
+		return resourcePath;
+	}
+
+	public void setResourcePath(String resourcePath) {
+		this.resourcePath = resourcePath;
+	}
+
 	
 }

@@ -9,7 +9,7 @@ public class BaseException extends Exception {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private static final String APOPTOSISEXCEPTION_MSG = "EXCEPTION OCCURED";
+	private static final String APOPTOSISEXCEPTION_MSG = "APOPTOSIS EXCEPTION OCCURED";
 	
 	public BaseException() {
 
